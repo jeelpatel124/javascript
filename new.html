@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart-like Login/Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+        }
+
+        
+        .modal {
+            display: block; 
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 30%;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+        }
+
+        .modal-header span {
+            font-size: 30px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        
+        .tab {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #2874f0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #2874f0;
+            color: black;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        input[type=email], input[type=password] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        .success {
+            color: green;
+            font-size: 12px;
+        }
+
+        button[type=submit] {
+            background-color: #2874f0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 3px;
+        }
+
+        button[type=submit]:hover {
+            background-color: #0b69e3;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div id="loginSignupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Login</h2>
+                <span id="closeModal">&times;</span>
+            </div>
+            <div class="tabs">
+                <span id="loginTab" class="tab active">Login</span>
+                <span id="signupTab" class="tab">Signup</span>
+            </div>
+
+            
+            <form id="loginForm" class="form active">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required>
+                <span id="loginEmailError" class="error"></span><br>
+
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required>
+                <span id="loginPasswordError" class="error"></span><br>
+
+                <button type="submit">Login</button>
+                <span id="loginSuccess" class="success"></span>
+            </form>
+
+    
+            <form id="signupForm" class="form">
+                <label for="signupEmail">Email:</label>
+                <input type="email" id="signupEmail" required>
+                <span id="signupEmailError" class="error"></span><br>
+
+                <label for="signupPassword">Password:</label>
+                <input type="password" id="signupPassword" required>
+                <span id="signupPasswordError" class="error"></span><br>
+
+                <button type="submit">Signup</button>
+                <span id="signupSuccess" class="success"></span>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    
+
+        
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('loginSignupModal').style.display = 'none';
+        });
+
+        
+        document.getElementById('loginTab').addEventListener('click', function() {
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('signupForm').classList.remove('active');
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('signupTab').classList.remove('active');
+            document.getElementById('modalTitle').innerText = 'Login';
+            resetMessages();
+        });
+
+        document.getElementById('signupTab').addEventListener('click', function() {
+            document.getElementById('signupForm').classList.add('active');
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('signupTab').classList.add('active');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('modalTitle').innerText = 'Signup';
+            resetMessages();
+        });
+
+    
+        function resetMessages() {
+            document.querySelectorAll('.error').forEach(error => error.innerText = '');
+            document.querySelectorAll('.success').forEach(success => success.innerText = '');
+        }
+
+        
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            let valid = true;
+
+    
+            if (!emailPattern.test(email)) {
+                document.getElementById('signupEmailError').innerText = 'Invalid email format.';
+                valid = false;
+            } else {
+                document.getElementById('signupEmailError').innerText = '';
+            }
+
+            
+            if (!passwordPattern.test(password)) {
+                document.getElementById('signupPasswordError').innerText = 'Password must be at least 8 characters, including 1 uppercase, 1 lowercase, and 1 number.';
+                valid = false;
+            } else {
+                document.getElementById('signupPasswordError').innerText = '';
+            }
+
+            if (valid) {
+                document.getElementById('signupSuccess').innerText = 'Signup successful!';
+            }
+        });
+
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            let valid = true;
+
+        
+            if (!emailPattern.test(email)) {
+                document.getElementById('loginEmailError').innerText = 'Invalid email format.';
+                valid = false;
+            } else {
+                document.getElementById('loginEmailError').innerText = '';
+            }
+
+        
+            if (!passwordPattern.test(password)) {
+                document.getElementById('loginPasswordError').innerText = 'Invalid password.';
+                valid = false;
+            } else {
+                document.getElementById('loginPasswordError').innerText = '';
+            }
+
+            if (valid) {
+                document.getElementById('loginSuccess').innerText = 'Login successful!';
+            }
+        });
+
+    </script>
+</body>
+</html>
